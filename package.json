@@ -1,0 +1,72 @@
+{
+  "name": "rpl-gen-studio",
+  "displayName": "RplGenStudio",
+  "description": "回声工坊2扩展，增强剧本文件编辑",
+  "icon": "images/icon.png",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.87.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:hello-world",
+    "workspaceContains:**/*.rgpj"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "rpl-gen-studio.helloWorld",
+        "title": "Hello World"
+      }
+      ,{
+        "command": "rpl-gen-studio.refreshTreeView",
+        "title": "刷新项目视图"
+      }
+      ,{
+        "command": "rpl-gen-studio.openLogFile",
+        "title": "打开剧本文件"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "project-explorer",
+          "title": "项目管理器",
+          "icon": "images/icon.png"
+        }
+      ]
+    },
+    "views": {
+      "project-explorer": [
+        {
+          "id": "log",
+          "name": "剧本文件"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.87.0",
+    "@types/glob": "^7.2.0",
+    "@types/mocha": "^9.1.1",
+    "@types/node": "16.x",
+    "@typescript-eslint/eslint-plugin": "^5.27.0",
+    "@typescript-eslint/parser": "^5.27.0",
+    "eslint": "^8.16.0",
+    "glob": "^8.0.3",
+    "mocha": "^10.0.0",
+    "typescript": "^4.7.2",
+    "@vscode/test-electron": "^2.1.3"
+  }
+}
