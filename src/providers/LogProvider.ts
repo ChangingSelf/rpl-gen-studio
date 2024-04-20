@@ -1,14 +1,15 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
-import { LogLine } from '../entities/LogLine';
+import { Log } from '../entities/Log';
+import { ProjectFile } from '../entities/ProjectFile';
 
-export class Log extends vscode.TreeItem {
+export class LogNode extends vscode.TreeItem {
   public document?: vscode.TextDocument;
   constructor(
-      public label: string,
-      public lines:LogLine[],
-      public collapsibleState: vscode.TreeItemCollapsibleState = vscode.TreeItemCollapsibleState.None
+    public label: string,
+    public log: Log,
+    public collapsibleState: vscode.TreeItemCollapsibleState = vscode.TreeItemCollapsibleState.None
   ) {
     super(label, collapsibleState);
 
@@ -20,20 +21,16 @@ export class Log extends vscode.TreeItem {
       "arguments": [this]
     };
   }
-  
+
   toString() {
     return this.label;
   }
 
   render(): string {
-    let content = '';
-    for (const logLine of this.lines) {
-      content += logLine.render() + '\n';
-    }
-    return content;
+    return this.log.render();
   }
 
-  async createDocument():Promise<vscode.TextDocument> {
+  async createDocument(): Promise<vscode.TextDocument> {
     return await vscode.workspace.openTextDocument({
       content: this.render(),
       language: "rgl",
@@ -51,28 +48,28 @@ export class Log extends vscode.TreeItem {
 
 }
 
-export class LogProvider implements vscode.TreeDataProvider<Log> {
+export class LogProvider implements vscode.TreeDataProvider<LogNode> {
 
-  private _onDidChangeTreeData: vscode.EventEmitter<Log | undefined | null | void> = new vscode.EventEmitter<Log | undefined | null | void>();
-  readonly onDidChangeTreeData: vscode.Event<Log | undefined | null | void> = this._onDidChangeTreeData.event;
+  private _onDidChangeTreeData: vscode.EventEmitter<LogNode | undefined | null | void> = new vscode.EventEmitter<LogNode | undefined | null | void>();
+  readonly onDidChangeTreeData: vscode.Event<LogNode | undefined | null | void> = this._onDidChangeTreeData.event;
   refresh(): void {
-      this._onDidChangeTreeData.fire();
+    this._onDidChangeTreeData.fire();
   }
 
-  constructor() {}
+  constructor() { }
 
-  getTreeItem(element: Log): vscode.TreeItem {
+  getTreeItem(element: LogNode): vscode.TreeItem {
     return element;
   }
 
-  getChildren(element?: Log): vscode.ProviderResult<Log[]> {
-    const children: Log[] = [];
+  getChildren(element?: LogNode): vscode.ProviderResult<LogNode[]> {
+    const children: LogNode[] = [];
 
     // 获取当前工作区根目录
     const workspaceFolders = vscode.workspace.workspaceFolders;
     if (!workspaceFolders || workspaceFolders.length === 0) {
-        vscode.window.showErrorMessage('请在回声工坊2项目文件夹中打开vscode');
-        return [];
+      vscode.window.showErrorMessage('请在回声工坊2项目文件夹中打开vscode');
+      return [];
     }
 
     const rootPath = workspaceFolders[0].uri.fsPath;
@@ -87,28 +84,22 @@ export class LogProvider implements vscode.TreeDataProvider<Log> {
     }
 
     //解析项目文件
-    const project = path.join(rootPath,projects[0]);
-    const projectObj = JSON.parse(fs.readFileSync(project,{encoding:'utf8'}));
+    const project = path.join(rootPath, projects[0]);
+    const projectFile: ProjectFile = JSON.parse(fs.readFileSync(project, { encoding: 'utf8' }));
 
-    const logObjs = projectObj.logfile;
+    const logFiles = projectFile.logfile;
 
     //将每一个log文件解析
-    for (const logName in logObjs) {
+    for (const logName in logFiles) {
       //将项目文件中的对象（key为行号，value为内容）转换为数组（元素为内容）
-      const logFile = logObjs[logName];
-      const logLines: LogLine[] = [];
-      for (const lineNum in logFile) {
-        const logLine = LogLine.parseLogLine(logFile[lineNum]);
-        if (logLine) {
-          logLines.push(logLine);
-        }
-        else {
-          vscode.window.showErrorMessage(`解析剧本文件【${logName}】的第${lineNum}行时出现错误，项目文件可能不是标准格式`);
-          return [];
-        }
+      const logFile = logFiles[logName];
+      const log = Log.parseLogFile(logName, logFile);
+      if (log) {
+        children.push(new LogNode(logName, log));
+      } else {
+        vscode.window.showErrorMessage(`解析剧本文件【${logName}】时出现错误，项目文件可能不是标准格式`);
+        return [];
       }
-
-      children.push(new Log(logName,logLines));
     }
 
     return children;

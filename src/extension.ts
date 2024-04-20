@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
-import { Log,LogProvider } from './providers/LogProvider';
+import { LogNode,LogProvider } from './providers/LogProvider';
 
 export function activate(context: vscode.ExtensionContext) {
 
@@ -18,7 +18,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   //打开文档
   context.subscriptions.push(vscode.commands.registerCommand('rpl-gen-studio.openLogFile',
-    (log:Log) => {
+    (log:LogNode) => {
       log.show();
     })
   );
