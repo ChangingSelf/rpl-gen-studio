@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 /**
  * 项目文件接口定义
+ * 
+ * 原始项目文件中的剧本文件数据被称为log，本扩展中将其称为script，便于区分
  */
-
 
 
 /**
@@ -96,7 +97,7 @@ export interface LogLine {
 }
 
 /**
- * 剧本文件对象（单个）
+ * 原始剧本文件对象（单个）
  * 
  * 注意：这是单个文件的对象，并不对应项目文件的文件列表
  */
@@ -105,7 +106,7 @@ export interface LogFile {
 }
 
 /**
- * 剧本文件对象
+ * 原始剧本文件对象
  */
 interface LogFiles {
   [fileName: string]: LogFile
@@ -114,7 +115,7 @@ interface LogFiles {
 /**
  * 项目文件
  */
-export interface ProjectFile {
+export interface Project {
   config: ProjectConfig;
   mediadef: MediaDefine;
   chartab: CharacterTable;

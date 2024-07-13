@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/naming-convention */
+import { LogFile, LogLine } from "./Project";
 
-import * as vscode from 'vscode';
-import { LogFile, LogLine } from "./ProjectFile";
-
+/**
+ * 原始剧本行类型
+ */
 export enum LineType {
   EXCEPTION = "exception",
   COMMENT = "comment",
@@ -11,7 +12,6 @@ export enum LineType {
   BACKGROUND = "background",
   DIALOG = "dialog"
 }
-
 
 /**
  * 剧本行
@@ -40,7 +40,7 @@ export abstract class Line {
         case LineType.BLANK:
           return new BlankLine();
         case LineType.DIALOG:
-          return new DiagLine(logLine.content ?? "");
+          return new DialogLine(logLine.content ?? "");
         default:
           return new BlankLine();
       }
@@ -53,9 +53,9 @@ export abstract class Line {
 
 
 /**
- * 跑团日志文件
+ * 剧本文件
  */
-export class Log {
+export class Script {
   constructor(
     public title: string,//剧本文件名
     public content: Line[],//内容
@@ -63,21 +63,27 @@ export class Log {
 
   }
 
-  static parseLogFile(title: string, logFile: LogFile): Log | null {
+  /**
+   * 解析剧本
+   * @param title 剧本标题
+   * @param logFile 原始剧本文件对象
+   * @returns 
+   */
+  static parse(title: string, logFile: LogFile): Script | null {
     const content: Line[] = [];
     for (const lineNum in logFile) {
-      const logLine = Line.parse(logFile[lineNum]);
-      if (logLine) {
-        content.push(logLine);
+      const line = Line.parse(logFile[lineNum]);
+      if (line) {
+        content.push(line);
       }
       else {
         return null;
       }
     }
-    return new Log(title, content);
+    return new Script(title, content);
   }
 
-  static parseString(text: string): Log | null{
+  static parseString(text: string): Script | null{
     return null;//TODO
   }
 
@@ -138,7 +144,7 @@ export class BlankLine extends Line {
 /**
  * 对话行
  */
-export class DiagLine extends Line {
+export class DialogLine extends Line {
   constructor(public content: string) {
     super(LineType.DIALOG);
   }

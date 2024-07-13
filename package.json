@@ -26,7 +26,7 @@
         "title": "刷新项目视图"
       }
       ,{
-        "command": "rpl-gen-studio.openLogFile",
+        "command": "rpl-gen-studio.openScript",
         "title": "打开剧本文件"
       }
     ],
@@ -34,7 +34,7 @@
       "activitybar": [
         {
           "id": "project-explorer",
-          "title": "项目管理器",
+          "title": "回声工坊项目管理器",
           "icon": "images/icon.png"
         }
       ]
@@ -42,7 +42,7 @@
     "views": {
       "project-explorer": [
         {
-          "id": "log",
+          "id": "script",
           "name": "剧本文件"
         }
       ]
