@@ -3,7 +3,7 @@
  */
 import * as vscode from 'vscode';
 import { Script } from '../entities/Script';
-import { ProjectLoader } from '../ProjectLoader';
+import { Project } from '../entities/Project';
 
 /**
  * 跑团日志文件
@@ -29,7 +29,7 @@ export class ScriptNode extends vscode.TreeItem {
   }
 
   render(): string {
-    return this.script.render();
+    return this.script.toString();
   }
 
 }
@@ -50,7 +50,9 @@ export class ScriptProvider implements vscode.TreeDataProvider<ScriptNode> {
 
   getChildren(element?: ScriptNode): vscode.ProviderResult<ScriptNode[]> {
     const children: ScriptNode[] = [];
-    const scripts = ProjectLoader.loadScripts();
+    const project = Project.getInstance();
+    project.load();
+    const scripts = project.scripts;
     scripts.forEach(script => {
       children.push(new ScriptNode(script.title, script));
     });

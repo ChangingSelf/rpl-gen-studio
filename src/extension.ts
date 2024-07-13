@@ -42,6 +42,8 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(vscode.workspace.onDidSaveTextDocument(doc => {
     //如果是保存的是临时文件，那么就将其保存到项目文件当中
     if (doc.uri.fsPath.startsWith(tempDir)) {
+      vscode.window.showInformationMessage(doc.fileName);
+      
         // const scriptName = path.basename(doc.uri.fsPath);
         // const script = scriptProvider.projectFile.scripts.find(s => s.name === scriptName);
         // if (script) {
