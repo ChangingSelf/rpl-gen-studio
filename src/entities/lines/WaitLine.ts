@@ -1,4 +1,5 @@
 import { Line, LineType } from "../Line";
+import { RawLine } from "../RawProject";
 
 /**
  * 停顿行
@@ -24,5 +25,12 @@ export class WaitLine extends Line {
     } else {
       return null;
     }
+  }
+
+  toRaw(): RawLine {
+    return {
+      type: LineType.WAIT,
+      time: this.time,
+    };
   }
 }

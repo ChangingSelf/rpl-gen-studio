@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
-import { RawProject } from './RawProject';
+import { RawProject, RawScripts } from './RawProject';
 import { Script } from './Script';
 /**
  * 解析后的项目
@@ -38,9 +38,32 @@ export class Project{
   /**
    * 保存
    */
-  save() {
+  toRaw():RawProject {
     // let result = '';
-    
+    const rawScripts: RawScripts = {};
+    this.scripts.forEach(s => {
+      rawScripts[s.title] = s.toRaw();
+    });
+    return {
+      logfile: rawScripts,
+    };
+  }
+
+  updateScript(scriptName:string,content:string):boolean {
+    const script = this.scripts.find(s => s.title === scriptName);
+    if (!script) {
+      return false;
+    }
+
+    const newScript = Script.parseFromStr(scriptName, content);
+    let flag = false;
+    this.scripts.forEach(s => {
+      if (s.title === scriptName) {
+        s.lines = newScript?.lines;
+        flag = true;
+      }
+    });
+    return flag;
   }
 
 
@@ -86,7 +109,7 @@ export class Project{
     for (const title in logFile) {
       //将项目文件中的对象（key为行号，value为内容）转换为数组（元素为内容）
       const content = logFile[title];
-      const script = Script.parse(title, content);
+      const script = Script.parseFromRaw(title, content);
       if (script) {
         scriptList.push(script);
       } else {

@@ -1,11 +1,12 @@
 import { Line, LineType } from "../Line";
+import { RawLine } from "../RawProject";
 
 /**
  * BGM行
  */
 export class BgmLine extends Line {
   constructor(
-    public bgm:string
+    public object:string
   ) {
     super(LineType.BGM);
   }
@@ -21,5 +22,12 @@ export class BgmLine extends Line {
     } else {
       return null;
     }
+  }
+
+  toRaw(): RawLine {
+    return {
+      type: LineType.BGM,
+      value: this.object
+    };
   }
 }

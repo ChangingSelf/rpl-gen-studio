@@ -1,4 +1,6 @@
 import { Line, LineType } from "../Line";
+import { Method } from "../Method";
+import { RawLine } from "../RawProject";
 
 /**
  * 背景行
@@ -6,23 +8,31 @@ import { Line, LineType } from "../Line";
 export class BackgroundLine extends Line {
   
   constructor(
-    public switchMethod: string,
-    public background:string,
+    public object:string,
+    public switchMethod: Method | null,
   ) {
     super(LineType.BACKGROUND);
   }
 
   toString(): string {
-    return `<background>${this.switchMethod}:${this.background}`;
+    return `<background>${this.switchMethod}:${this.object}`;
   }
 
   static override parse(text: string): Line | null {
     const regexBackgroundLine = /^<background>(<[\w\=]+>)?:(.+)$/m;
     let r = regexBackgroundLine.exec(text);
     if (r) {
-      return new BackgroundLine(r[1], r[2]);
+      return new BackgroundLine(r[2],Method.parse(r[1]));
     } else {
       return null;
     }
+  }
+
+  toRaw(): RawLine {
+    return {
+      type: LineType.BACKGROUND,
+      bg_method: this.switchMethod?.toRaw(),
+      object: this.object,
+    };
   }
 }

@@ -2,6 +2,7 @@ import { Character } from "../Character";
 import { SoundEffectBox } from "../SoundEffectBox";
 import { Line, LineType } from "../Line";
 import { Method } from "../Method";
+import { RawLine,RawCharacter, RawCharacters } from "../RawProject";
 
 /**
  * 对话行
@@ -124,5 +125,25 @@ export class DialogLine extends Line {
     } else {
       return null;
     }
+  }
+
+  toRaw(): RawLine {
+    const charactorSet:RawCharacters = {};
+    this.characterList.forEach((pc,index) => {
+      charactorSet[String(index)] = {
+        name: pc.name,
+        subtype: pc.subtype,
+        alpha: pc.alpha,
+      };
+    });
+
+    return {
+      type: LineType.DIALOG,
+      charactor_set: charactorSet,
+      ab_method: this.toggleEffect.toRaw(),
+      content: this.content,
+      tx_method: this.textEffect.toRaw(),
+    };
+    //TODO:音效未解析
   }
 }

@@ -1,4 +1,5 @@
 import { Line, LineType } from "../Line";
+import { RawLine } from "../RawProject";
 
 /**
  * 注释行
@@ -22,4 +23,10 @@ export class CommentLine extends Line {
     }
   }
   
+  toRaw(): RawLine {
+    return {
+      type: LineType.COMMENT,
+      content: this.content,
+    };
+  }
 }

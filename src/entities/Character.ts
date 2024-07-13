@@ -1,7 +1,7 @@
 export class Character {
   constructor(
     public name: string = '',//角色名
-    public alpha: number = -1,//不透明度
+    public alpha: number | null = null,//不透明度
     public subtype: string = 'default',//差分名
   ) {
 

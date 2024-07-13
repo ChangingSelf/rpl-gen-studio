@@ -1,3 +1,5 @@
+import { RawMethod } from "./RawProject";
+
 /**
  * 效果函数
  * 
@@ -18,5 +20,24 @@ export class Method{
     } else {
       return null;
     }
+  }
+  
+  toString(): string {
+    if (this.method === 'default') {
+      return '';
+    } else {
+      if (this.methodDuration === 'default') {
+        return `<${this.method}>`;
+      } else {
+        return `<${this.method}=${this.methodDuration}>`;
+      }
+    }
+  }
+
+  toRaw(): RawMethod {
+    return {
+      method: this.method ?? "default",
+      method_dur: this.methodDuration ?? "default",
+    };
   }
 }

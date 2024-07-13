@@ -36,18 +36,22 @@ interface CharacterTable {
 /**
  * 切换方式
  */
-interface Method {
+export interface RawMethod {
   method: string;
-  method_dur: number;
+  method_dur: number | string;
 }
 
 /**
  * 角色
  */
-interface Character {
+export interface RawCharacter {
   name: string;
   subtype: string;
   alpha: number | null;
+}
+
+export interface RawCharacters{
+  [key:string]:RawCharacter
 }
 
 /**
@@ -69,7 +73,7 @@ interface SoundSet {
 /**
  * 剧本行（项目文件中原始定义结构）
  */
-export interface LogLine {
+export interface RawLine {
   type: string;//行类型
 
   //注释行
@@ -81,18 +85,20 @@ export interface LogLine {
   //设置行
   target?: string;//设置项
   value_type?: string;//设置项值的类型
-  value?: number | string | Method;//设置值
+  value?: number | string | RawMethod;//设置值
 
   //背景行
-  bg_method?: Method;
+  bg_method?: RawMethod;
   object?: string;//媒体对象
 
   //对话行
-  charactor_set?: Character[];
-  ab_method?: Method;
-  tx_method?: Method;
+  charactor_set?: RawCharacters;
+  ab_method?: RawMethod;
+  tx_method?: RawMethod;
   sound_set?: SoundSet;
 
+  //停顿行
+  time?: number;
 }
 
 /**
@@ -100,23 +106,23 @@ export interface LogLine {
  * 
  * 注意：这是单个文件的对象，并不对应项目文件的文件列表
  */
-export interface LogFile {
-  [lineNum: string]: LogLine
+export interface RawScript {
+  [lineNum: string]: RawLine
 }
 
 /**
  * 原始剧本文件对象
  */
-export interface LogFiles {
-  [fileName: string]: LogFile
+export interface RawScripts {
+  [fileName: string]: RawScript
 }
 
 /**
  * 项目文件
  */
 export interface RawProject {
-  config: ProjectConfig;
-  mediadef: MediaDefine;
-  chartab: CharacterTable;
-  logfile: LogFiles;
+  config?: ProjectConfig;
+  mediadef?: MediaDefine;
+  chartab?: CharacterTable;
+  logfile?: RawScripts;
 }
