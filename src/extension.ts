@@ -8,13 +8,33 @@ import { Script } from './entities/Script';
 import { ScriptParser } from './entities/ScriptParser';
 import * as moment from 'moment';
 
+
+/**
+ * 删除文件夹
+ * @param {*} dirPath 
+ */
+function emptyDir(dirPath:string) {
+  const files = fs.readdirSync(dirPath);
+  files.forEach(file => {
+    const filePath = path.join(dirPath, file); 
+      const stats = fs.statSync(filePath);
+      if (stats.isDirectory()) {
+          emptyDir(filePath);
+      } else {
+          fs.unlinkSync(filePath);
+      }
+  });
+}
+
 export function activate(context: vscode.ExtensionContext) {
 
   //创建临时文件夹
   const tempFolderName = ProjectFactory.tempFolderName;
   const tempDir = path.join(context.extensionPath, tempFolderName);
   if (!fs.existsSync(tempDir)) {
-      fs.mkdirSync(tempDir);
+    fs.mkdirSync(tempDir);
+  } else {
+    emptyDir(tempDir);
   }
 
   //创建树视图提供者
