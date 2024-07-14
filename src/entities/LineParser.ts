@@ -70,10 +70,14 @@ export class LineParser {
         ExceptionLine.parse,
       ];
       const resultList = parserChain.map((parser) => parser(line));
-      return resultList.find(x => x !== null) ?? null;
+      const result = resultList.find(x => x !== null);
+      if (result) {
+        return result;
+      } else {
+        return new ExceptionLine(line, "解析失败！");
+      }
     } catch (err) {
-      console.log((err as Error).message);
-      return null;
+      return new ExceptionLine(line, (err as Error).message);
     }
   }
 }

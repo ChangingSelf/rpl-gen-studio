@@ -16,7 +16,11 @@ export class Method{
     const regex = /^<(\w+)(=\d+)?>$/m;
     let r = regex.exec(text);
     if (r) {
-      return new Method(r[1],Number(r[2]));
+      if (r[2]) {
+        return new Method(r[1],Number(r[2]));
+      } else {
+        return new Method(r[1]);
+      }
     } else {
       return null;
     }
