@@ -4,6 +4,7 @@
 import * as vscode from 'vscode';
 import { Script } from '../entities/Script';
 import { Project } from '../entities/Project';
+import { ProjectFactory } from '../entities/ProjectFactory';
 
 /**
  * 跑团日志文件
@@ -50,8 +51,11 @@ export class ScriptProvider implements vscode.TreeDataProvider<ScriptNode> {
 
   getChildren(element?: ScriptNode): vscode.ProviderResult<ScriptNode[]> {
     const children: ScriptNode[] = [];
-    const project = Project.getInstance();
-    project.load();
+    const project = ProjectFactory.loadCurProject();
+    if (!project) {
+      vscode.window.showErrorMessage(`项目载入失败`);
+      return [];
+    }
     const scripts = project.scripts;
     scripts.forEach(script => {
       children.push(new ScriptNode(script.title, script));

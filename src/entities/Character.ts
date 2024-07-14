@@ -9,7 +9,7 @@ export class Character {
 
   public toString() {
     let str = this.name;
-    if (this.alpha !== -1 && !isNaN(this.alpha)) {
+    if (this.alpha !== -1 && !this.alpha) {
       str += `(${this.alpha})`;
     }
     if (this.subtype !== "default") {

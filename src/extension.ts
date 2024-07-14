@@ -3,11 +3,15 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { ScriptNode,ScriptProvider } from './providers/ScriptProvider';
 import { Project } from './entities/Project';
+import { ProjectFactory } from './entities/ProjectFactory';
+import { Script } from './entities/Script';
+import { ScriptParser } from './entities/ScriptParser';
+import * as moment from 'moment';
 
 export function activate(context: vscode.ExtensionContext) {
 
   //创建临时文件夹
-  const tempFolderName = 'temp';
+  const tempFolderName = ProjectFactory.tempFolderName;
   const tempDir = path.join(context.extensionPath, tempFolderName);
   if (!fs.existsSync(tempDir)) {
       fs.mkdirSync(tempDir);
@@ -43,32 +47,45 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(vscode.workspace.onDidSaveTextDocument(doc => {
     //如果是保存的是临时文件，那么就将其保存到项目文件当中
     if (doc.uri.fsPath.startsWith(tempDir)) {
-      vscode.window.showInformationMessage(doc.fileName);
       
-        // 获取当前工作区根目录
-      const workspaceFolders = vscode.workspace.workspaceFolders;
-      if (!workspaceFolders || workspaceFolders.length === 0) {
-        vscode.window.showErrorMessage('请在回声工坊2项目文件夹中打开vscode');
-        return null;
+      //保留备份
+      const rgpj = ProjectFactory.getProjectFilePath();
+      if (!rgpj) {
+        return;
       }
 
-      const rootPath = workspaceFolders[0].uri.fsPath;
-
-      // 查找 .rgpj 文件
-      const files = fs.readdirSync(rootPath);
-      const projectFiles = files.filter(file => path.extname(file) === ".rgpj");
-      if (!projectFiles || projectFiles.length === 0) {
-        vscode.window.showErrorMessage('当前文件夹中不存在回声工坊2项目文件(*.rgpj)');
-        return null;
+      let scriptName = path.basename(doc.uri.fsPath).trim();
+      scriptName = scriptName.substring(0, scriptName.lastIndexOf('.'));//去除扩展名
+      console.log(scriptName);
+      
+      const project = ProjectFactory.loadCurProject();
+      if (project === null) {
+        return;
+      }
+      const newScript = project.updateScript(scriptName, doc.getText());
+      if (!newScript) {
+        vscode.window.showInformationMessage(`解析失败！未保存`);
+        return;
       }
       
-      //解析项目文件
-      const rgpj = path.join(rootPath, 'test' + projectFiles[0]);
+      let backupPath = path.join(path.dirname(rgpj ?? ''), ProjectFactory.backupFolderName);
+      if (!fs.existsSync(backupPath)) {
+        fs.mkdirSync(backupPath);
+      }
+      let projectFileName = path.basename(rgpj);
+      projectFileName = projectFileName.substring(0, projectFileName.lastIndexOf('.'));//去除扩展名
+      const backupFullPath = path.join(backupPath, `${projectFileName}.${moment().format('YYMMDD_HHmmss')}.rgpj`);
 
-      const scriptName = path.basename(doc.uri.fsPath);
-      const project = Project.getInstance();
-      project.updateScript(scriptName, doc.getText());
-      fs.writeFileSync(rgpj, JSON.stringify(project.toRaw(), null, 4),'utf-8');
+      ProjectFactory.saveWithBackup(project, backupFullPath);
+      fs.writeFileSync(doc.fileName, doc.getText(), 'utf-8');
+      scriptProvider.refresh();
+    }
+  }));
+
+  //关闭时删除临时文件（这取决于vscode什么时候彻底关闭对应的文档）
+  context.subscriptions.push(vscode.workspace.onDidCloseTextDocument((doc: vscode.TextDocument) => {
+    if (doc.uri.fsPath.startsWith(tempDir)) {
+      fs.rmSync(doc.fileName);
     }
   }));
 
