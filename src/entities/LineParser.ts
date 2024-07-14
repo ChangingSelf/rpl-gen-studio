@@ -9,6 +9,9 @@ import { RawLine } from "./RawProject";
 import { BgmLine } from "./lines/BgmLine";
 import { WaitLine } from "./lines/WaitLine";
 import { Line, LineType } from "./Line";
+import { log } from "console";
+import { SetLine } from "./lines/SetLine";
+import { ConfigValue, ValueType } from "./ConfigValue";
 
 
 /**
@@ -19,31 +22,47 @@ import { Line, LineType } from "./Line";
 export class LineParser {
   /**
    * 将项目文件中的原始剧本行解析为本插件用到的剧本行对象以方便处理
-   * @param logLine
+   * @param r
    * @returns
    */
-  static parseFromRaw(logLine: RawLine): Line | null {
+  static parseFromRaw(r: RawLine): Line | null {
     try {
-      switch (logLine.type) {
+      switch (r.type) {
         case LineType.EXCEPTION:
-          return new ExceptionLine(logLine.content ?? "", logLine.info ?? "");
+          return new ExceptionLine(r.content ?? "", r.info ?? "");
         case LineType.COMMENT:
-          return new CommentLine(logLine.content ?? "");
+          return new CommentLine(r.content ?? "");
         case LineType.BLANK:
           return new BlankLine();
+        case LineType.BACKGROUND:
+          return new BackgroundLine(r.object ?? '', new Method(r.bg_method?.method, r.bg_method?.method_dur));
+        case LineType.BGM:
+          return new BgmLine(r.object ?? '');
+        case LineType.WAIT:
+          return new WaitLine(r.time ?? 0);
+        case LineType.SET:
+          console.log(r);
+          if (!r.target) {
+            return null;
+          }
+          const value = new ConfigValue(r.value_type as ValueType, r.value_type===ValueType.METHOD ? new Method(r.value?.method,r.value?.method_dur) : String(r.value));
+          if (!value) {
+            return null;
+          }
+          return new SetLine(r.target, value);
         case LineType.DIALOG: {
           const characterList: Character[] = [];
-          for (const key in logLine.charactor_set) {
-            const pc = logLine.charactor_set[key];
+          for (const key in r.charactor_set) {
+            const pc = r.charactor_set[key];
             characterList.push(new Character(pc.name, pc.alpha ?? undefined, pc.subtype));
           }
 
-          const toggleEffect = new Method(logLine.ab_method?.method, logLine.ab_method?.method_dur);
+          const toggleEffect = new Method(r.ab_method?.method, r.ab_method?.method_dur);
 
-          const textEffect = new Method(logLine.tx_method?.method, logLine.tx_method?.method_dur);
+          const textEffect = new Method(r.tx_method?.method, r.tx_method?.method_dur);
 
           //TODO:音效框的解析
-          return new DialogLine(characterList, toggleEffect, logLine.content, textEffect);
+          return new DialogLine(characterList, toggleEffect, r.content, textEffect);
         }
         default:
           return new BlankLine();
@@ -61,6 +80,7 @@ export class LineParser {
   static parseFromStr(line: string): Line | null {
     try {
       const parserChain = [
+        SetLine.parse,
         BackgroundLine.parse,
         BgmLine.parse,
         DialogLine.parse,

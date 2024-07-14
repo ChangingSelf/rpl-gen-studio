@@ -44,6 +44,7 @@ export class ScriptParser {
         content.push(line);
       }
       else {
+        console.log(`解析${title}的第${lineNum}行时出错`);
         return null;
       }
     }

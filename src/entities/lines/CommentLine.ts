@@ -10,7 +10,7 @@ export class CommentLine extends Line {
   }
 
   toString(): string {
-    return `# ${this.content}`;
+    return `#${this.content}`;
   }
 
   static override parse(text: string): Line | null {
