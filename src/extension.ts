@@ -35,8 +35,10 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(vscode.commands.registerCommand('rpl-gen-studio.openScript',
     (log: ScriptNode) => {
       // 创建临时文件之后再打开
-      const tempFilePath = path.join(tempDir, log.label+'.rgl');
-      fs.writeFileSync(tempFilePath, log.render(), 'utf-8');
+      const tempFilePath = path.join(tempDir, log.label + '.rgl');
+      if (!fs.existsSync(tempFilePath)) {
+        fs.writeFileSync(tempFilePath, log.render(), 'utf-8');
+      }
       vscode.workspace.openTextDocument(tempFilePath).then(doc => {
           vscode.window.showTextDocument(doc);
       });
@@ -78,7 +80,6 @@ export function activate(context: vscode.ExtensionContext) {
 
       ProjectFactory.saveWithBackup(project, backupFullPath);
       fs.writeFileSync(doc.fileName, doc.getText(), 'utf-8');
-      scriptProvider.refresh();
     }
   }));
 
