@@ -12,6 +12,8 @@ import { Line, LineType } from "./Line";
 import { SetterLine } from "./lines/SetterLine";
 import { SetterLineValue, ValueType } from "./lines/components/SetterLineValue";
 import { SoundBoxes } from "./lines/components/SoundBoxes";
+import { DiceLine } from "./lines/DiceLine";
+import { Dice } from "./lines/components/Dice";
 
 
 /**
@@ -65,6 +67,14 @@ export class LineParser {
           
           return new DialogLine(characterList, toggleEffect, r.content, textEffect,soundBoxes);
         }
+        case LineType.DICE:{
+          const diceList: Dice[] = [];
+          for (const diceIndex in r.dice_set) {
+            const dice = r.dice_set[diceIndex];
+            diceList.push(new Dice(dice.content, String(dice.dicemax), dice.check == null ? "NA":String(dice.check), String(dice.face)));
+          }
+          return new DiceLine(diceList);
+        }
         default:
           return new BlankLine();
       }
@@ -84,6 +94,7 @@ export class LineParser {
         SetterLine.parse,
         BackgroundLine.parse,
         BgmLine.parse,
+        DiceLine.parse,
         DialogLine.parse,
         WaitLine.parse,
         CommentLine.parse,

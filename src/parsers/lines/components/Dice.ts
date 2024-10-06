@@ -20,7 +20,16 @@ export class Dice {
     this.random = Number.parseInt(random);
   }
 
-  public toString() {
+  toString() {
     return `(${this.title},${this.face},${this.check ?? "NA"},${this.random})`;
+  }
+
+  toRaw(): any {
+    return {
+      content: this.title,
+      dicemax: this.face,
+      face: this.random,
+      check: this.check,
+    }
   }
 }

@@ -43,7 +43,7 @@ export class SoundBoxes {
       for(const box of boxes){
         const soundData = box.split(';');
         const sound = soundData[0];
-        const timeStr = soundData[1];
+        const timeStr = soundData[1] ?? "0";
         if(timeStr.startsWith("*")){
           //说明是星标语音
           soundBoxes.rawSoundSet['*'] = {

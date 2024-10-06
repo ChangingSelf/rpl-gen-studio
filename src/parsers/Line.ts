@@ -13,6 +13,7 @@ export enum LineType {
   DIALOG = "dialog",
   WAIT = "wait",
   BGM = "music",
+  DICE = "dice",
 }
 
 

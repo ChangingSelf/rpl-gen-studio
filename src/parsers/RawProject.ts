@@ -70,6 +70,20 @@ export interface RawSoundSet {
   [key: string]: RawSound
 }
 
+/**
+ * 骰子
+ */
+export interface RawDice {
+  content: string;//标题
+  dicemax: number;//骰子面数
+  check: number | null;//检定值
+  face: number;//骰子结果
+}
+
+export interface RawDiceSet{
+  [key: string]: RawDice
+}
+
 
 /**
  * 剧本行（项目文件中原始定义结构）
@@ -100,6 +114,9 @@ export interface RawLine {
 
   //停顿行
   time?: number;
+
+  //骰子行
+  dice_set?: RawDiceSet;
 }
 
 /**
