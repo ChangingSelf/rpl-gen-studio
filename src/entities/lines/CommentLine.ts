@@ -13,7 +13,7 @@ export class CommentLine extends Line {
     return `#${this.content}`;
   }
 
-  static override parse(text: string): Line | null {
+  static override parse(text: string): CommentLine | null {
     const regex = /^#(.*)$/m;
     let r = regex.exec(text);
     if (r) {

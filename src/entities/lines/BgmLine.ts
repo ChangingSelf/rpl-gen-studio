@@ -14,7 +14,7 @@ export class BgmLine extends Line {
     return "";
   }
 
-  static override parse(text: string): Line | null {
+  static override parse(text: string): BgmLine | null {
     const regex = /^(<BGM>|<bgm>):(.*)$/m;
     let r = regex.exec(text);
     if (r) {

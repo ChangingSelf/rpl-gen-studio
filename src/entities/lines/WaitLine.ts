@@ -17,7 +17,7 @@ export class WaitLine extends Line {
     return `<wait>:${this.time}`;
   }
 
-  static override parse(text: string): Line | null {
+  static override parse(text: string): WaitLine | null {
     const regex = /^<wait>:(.*)$/m;
     let r = regex.exec(text);
     if (r) {

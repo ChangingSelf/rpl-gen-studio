@@ -18,7 +18,7 @@ export class BackgroundLine extends Line {
     return `<background>${this.switchMethod}:${this.object}`;
   }
 
-  static override parse(text: string): Line | null {
+  static override parse(text: string): BackgroundLine | null {
     const regexBackgroundLine = /^<background>(<[\w\=]+>)?:(.+)$/m;
     let r = regexBackgroundLine.exec(text);
     if (r) {

@@ -32,7 +32,7 @@ export class DialogLine extends Line {
    * @param text 
    * @returns 
    */
-  static override parse(text: string): Line | null {
+  static override parse(text: string): DialogLine | null {
     const regexDialogueLine = /^\[(([^,\.\(\)]*?)(\((\d+)\))?(\.([^,\.\(\)]*?))?)(,(([^,\.\(\)]*?)(\((\d+)\))?(\.([^,\.\(\)]*?))?))?(,(([^,\.\(\)]*?)(\((\d+)\))?(\.([^,\.\(\)]*?))?))?\](<.*?>)?:(.*?)(<.*?>)?(\{.*?\})?$/m;
     const regexSoundEffectBoxG = /\{(([^'"]*?)|"([^']*?)"|'([^"]*?)')(;(\*)?([^\*]*?))?\}/mg;
 

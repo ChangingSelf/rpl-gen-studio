@@ -14,7 +14,7 @@ export class BlankLine extends Line {
     return "";
   }
 
-  static override parse(text: string): Line | null {
+  static override parse(text: string): BlankLine | null {
     return text === '' ? new BlankLine : null;
   }
 

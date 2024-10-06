@@ -17,7 +17,7 @@ export class SetLine extends Line {
     return `<set:${this.target}>:${this.value}`;
   }
 
-  static override parse(text: string): Line | null {
+  static override parse(text: string): SetLine | null {
     const regex = /^<set:(.*?)>:(.*?)$/m;
     let r = regex.exec(text);
     if (r) {
