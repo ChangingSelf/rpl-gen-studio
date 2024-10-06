@@ -13,11 +13,11 @@ export class Method{
   }
 
   static parse(text: string): Method | null{
-    const regex = /^<(\w+)(=\d+)?>$/m;
+    const regex = /^<(\w+)(=(\d+))?>$/m;
     let r = regex.exec(text);
     if (r) {
       if (r[2]) {
-        return new Method(r[1],Number(r[2]));
+        return new Method(r[1],Number(r[3]));
       } else {
         return new Method(r[1]);
       }

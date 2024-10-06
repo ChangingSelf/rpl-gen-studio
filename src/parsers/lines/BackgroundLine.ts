@@ -31,7 +31,7 @@ export class BackgroundLine extends Line {
   toRaw(): RawLine {
     return {
       type: LineType.BACKGROUND,
-      bg_method: this.switchMethod?.toRaw(),
+      bg_method: this.switchMethod?.toRaw() ?? new Method().toRaw(),//回声工坊的保存策略似乎是即便没有值也保存一个空对象，所以这里要初始化一个默认值
       object: this.object,
     };
   }
