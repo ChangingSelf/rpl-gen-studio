@@ -37,7 +37,7 @@ export class LineParser {
         case LineType.BACKGROUND:
           return new BackgroundLine(r.object ?? '', new Method(r.bg_method?.method, r.bg_method?.method_dur));
         case LineType.BGM:
-          return new BgmLine(r.object ?? '');
+          return new BgmLine((r.value as string) ?? '');
         case LineType.WAIT:
           return new WaitLine(r.time ?? 0);
         case LineType.SET:

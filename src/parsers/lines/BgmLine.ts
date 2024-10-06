@@ -11,7 +11,7 @@ export class BgmLine extends Line {
     super(LineType.BGM);
   }
   toString(): string {
-    return "";
+    return `<BGM>:${this.object}`;
   }
 
   static override parse(text: string): BgmLine | null {
