@@ -65,7 +65,7 @@ interface Sound {
 /**
  * 音效集
  */
-interface SoundSet {
+interface RawSoundSet {
   [key: string]: Sound
 }
 
@@ -95,7 +95,7 @@ export interface RawLine {
   charactor_set?: RawCharacters;
   ab_method?: RawMethod;
   tx_method?: RawMethod;
-  sound_set?: SoundSet;
+  sound_set?: RawSoundSet;
 
   //停顿行
   time?: number;

@@ -1,7 +1,5 @@
-import * as vscode from 'vscode';
 import { RawProject, RawScripts } from './RawProject';
 import { Script } from './Script';
-import { ProjectFactory } from './ProjectFactory';
 import { ScriptParser } from './ScriptParser';
 
 export class ProjectConfig{

@@ -1,5 +1,5 @@
 import { Line, LineType } from "../Line";
-import { Method } from "../Method";
+import { Method } from "./components/Method";
 import { RawLine } from "../RawProject";
 
 /**

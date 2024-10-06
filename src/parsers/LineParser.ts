@@ -1,5 +1,5 @@
-import { Character } from "./Character";
-import { Method } from "./Method";
+import { Character } from "./lines/components/Character";
+import { Method } from "./lines/components/Method";
 import { BlankLine } from "./lines/BlankLine";
 import { CommentLine } from "./lines/CommentLine";
 import { ExceptionLine } from "./lines/ExceptionLine";
@@ -9,9 +9,8 @@ import { RawLine } from "./RawProject";
 import { BgmLine } from "./lines/BgmLine";
 import { WaitLine } from "./lines/WaitLine";
 import { Line, LineType } from "./Line";
-import { log } from "console";
 import { SetLine } from "./lines/SetLine";
-import { ConfigValue, ValueType } from "./ConfigValue";
+import { ConfigValue, ValueType } from "./lines/components/ConfigValue";
 
 
 /**
@@ -87,7 +86,6 @@ export class LineParser {
         WaitLine.parse,
         CommentLine.parse,
         BlankLine.parse,
-        ExceptionLine.parse,
       ];
       const resultList = parserChain.map((parser) => parser(line));
       const result = resultList.find(x => x !== null);

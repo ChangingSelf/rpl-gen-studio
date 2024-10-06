@@ -1,4 +1,4 @@
-import { RawMethod } from "./RawProject";
+import { RawMethod } from "../../RawProject";
 
 /**
  * 效果函数

@@ -1,7 +1,7 @@
-import { Character } from "../Character";
-import { SoundEffectBox } from "../SoundEffectBox";
+import { Character } from "./components/Character";
+import { SoundEffectBox } from "./components/SoundEffectBox";
 import { Line, LineType } from "../Line";
-import { Method } from "../Method";
+import { Method } from "./components/Method";
 import { RawLine,RawCharacter, RawCharacters } from "../RawProject";
 
 /**

@@ -2,10 +2,7 @@ import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
 import { ScriptNode,ScriptProvider } from './providers/ScriptProvider';
-import { Project } from './entities/Project';
-import { ProjectFactory } from './entities/ProjectFactory';
-import { Script } from './entities/Script';
-import { ScriptParser } from './entities/ScriptParser';
+import { ProjectFactory } from './parsers/ProjectFactory';
 import * as moment from 'moment';
 
 
@@ -13,13 +10,13 @@ import * as moment from 'moment';
  * 删除文件夹
  * @param {*} dirPath 
  */
-function emptyDir(dirPath:string) {
+function removeDir(dirPath:string) {
   const files = fs.readdirSync(dirPath);
   files.forEach(file => {
     const filePath = path.join(dirPath, file); 
       const stats = fs.statSync(filePath);
       if (stats.isDirectory()) {
-          emptyDir(filePath);
+          removeDir(filePath);
       } else {
           fs.unlinkSync(filePath);
       }
@@ -34,7 +31,7 @@ export function activate(context: vscode.ExtensionContext) {
   if (!fs.existsSync(tempDir)) {
     fs.mkdirSync(tempDir);
   } else {
-    emptyDir(tempDir);
+    removeDir(tempDir);
   }
 
   //创建树视图提供者
@@ -53,11 +50,11 @@ export function activate(context: vscode.ExtensionContext) {
 
   //打开文档
   context.subscriptions.push(vscode.commands.registerCommand('rpl-gen-studio.openScript',
-    (log: ScriptNode) => {
+    (script: ScriptNode) => {
       // 创建临时文件之后再打开
-      const tempFilePath = path.join(tempDir, log.label + '.rgl');
+      const tempFilePath = path.join(tempDir, script.label + '.rgl');
       if (!fs.existsSync(tempFilePath)) {
-        fs.writeFileSync(tempFilePath, log.render(), 'utf-8');
+        fs.writeFileSync(tempFilePath, script.render(), 'utf-8');
       }
       vscode.workspace.openTextDocument(tempFilePath).then(doc => {
           vscode.window.showTextDocument(doc);
@@ -68,38 +65,40 @@ export function activate(context: vscode.ExtensionContext) {
   //保存文件
   context.subscriptions.push(vscode.workspace.onDidSaveTextDocument(doc => {
     //如果是保存的是临时文件，那么就将其保存到项目文件当中
-    if (doc.uri.fsPath.startsWith(tempDir)) {
+    if (doc.uri.fsPath.startsWith(tempDir) && doc.languageId === 'rgl') {
       
-      //保留备份
-      const rgpj = ProjectFactory.getProjectFilePath();
-      if (!rgpj) {
+      //获取项目文件所在目录
+      const projectFilePath = ProjectFactory.getProjectFilePath();
+      if (!projectFilePath) {
+        return;
+      }
+
+      //用新剧本替换当前项目对应的剧本
+      const project = ProjectFactory.loadCurProject();
+      if (project === null) {
         return;
       }
 
       let scriptName = path.basename(doc.uri.fsPath).trim();
       scriptName = scriptName.substring(0, scriptName.lastIndexOf('.'));//去除扩展名
-      console.log(scriptName);
       
-      const project = ProjectFactory.loadCurProject();
-      if (project === null) {
-        return;
-      }
       const newScript = project.updateScript(scriptName, doc.getText());
       if (!newScript) {
-        vscode.window.showInformationMessage(`解析失败！未保存`);
+        vscode.window.showInformationMessage(`剧本【${scriptName}】解析失败！未保存`);
         return;
       }
       
-      let backupPath = path.join(path.dirname(rgpj ?? ''), ProjectFactory.backupFolderName);
+      //在当前目录下创建备份文件夹
+      let backupPath = path.join(path.dirname(projectFilePath ?? ''), ProjectFactory.backupFolderName);
       if (!fs.existsSync(backupPath)) {
         fs.mkdirSync(backupPath);
       }
-      let projectFileName = path.basename(rgpj);
+      let projectFileName = path.basename(projectFilePath);
       projectFileName = projectFileName.substring(0, projectFileName.lastIndexOf('.'));//去除扩展名
       const backupFullPath = path.join(backupPath, `${projectFileName}.${moment().format('YYMMDD_HHmmss')}.rgpj`);
 
       ProjectFactory.saveWithBackup(project, backupFullPath);
-      fs.writeFileSync(doc.fileName, doc.getText(), 'utf-8');
+      // fs.writeFileSync(doc.fileName, doc.getText(), 'utf-8');//好像是无意义的保存代码
     }
   }));
 

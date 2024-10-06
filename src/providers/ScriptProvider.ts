@@ -2,9 +2,8 @@
  * 剧本文件视图
  */
 import * as vscode from 'vscode';
-import { Script } from '../entities/Script';
-import { Project } from '../entities/Project';
-import { ProjectFactory } from '../entities/ProjectFactory';
+import { Script } from '../parsers/Script';
+import { ProjectFactory } from '../parsers/ProjectFactory';
 
 /**
  * 跑团日志文件

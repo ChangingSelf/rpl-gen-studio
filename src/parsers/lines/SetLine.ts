@@ -1,4 +1,4 @@
-import { ConfigValue } from "../ConfigValue";
+import { ConfigValue } from "./components/ConfigValue";
 import { Line, LineType } from "../Line";
 import { RawLine } from "../RawProject";
 
