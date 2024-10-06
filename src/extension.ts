@@ -65,8 +65,7 @@ export function activate(context: vscode.ExtensionContext) {
   //保存文件
   context.subscriptions.push(vscode.workspace.onDidSaveTextDocument(doc => {
     //如果是保存的是临时文件，那么就将其保存到项目文件当中
-    if (doc.uri.fsPath.startsWith(tempDir) && doc.languageId === 'rgl') {
-      
+    if (doc.uri.fsPath.startsWith(tempDir) && path.extname(doc.fileName) === '.rgl') {
       //获取项目文件所在目录
       const projectFilePath = ProjectFactory.getProjectFilePath();
       if (!projectFilePath) {

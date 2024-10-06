@@ -5,7 +5,7 @@ import { CommentLine } from "./lines/CommentLine";
 import { ExceptionLine } from "./lines/ExceptionLine";
 import { DialogLine } from "./lines/DialogLine";
 import { BackgroundLine } from "./lines/BackgroundLine";
-import { RawLine } from "./RawProject";
+import { RawLine, RawMethod } from "./RawProject";
 import { BgmLine } from "./lines/BgmLine";
 import { WaitLine } from "./lines/WaitLine";
 import { Line, LineType } from "./Line";
@@ -44,7 +44,7 @@ export class LineParser {
           if (!r.target) {
             return null;
           }
-          const value = new ConfigValue(r.value_type as ValueType, r.value_type===ValueType.METHOD ? new Method(r.value?.method,r.value?.method_dur) : String(r.value));
+          const value = new ConfigValue(r.value_type as ValueType, r.value_type===ValueType.METHOD ? new Method((r.value as RawMethod).method ,(r.value as RawMethod).method_dur) : String(r.value));
           if (!value) {
             return null;
           }

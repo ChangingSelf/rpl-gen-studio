@@ -9,7 +9,7 @@
  * 项目配置
  * TODO
  */
-interface ProjectConfig {
+interface RawProjectConfig {
   Name: string;
   Cover: string;
   Width: number;
@@ -21,7 +21,7 @@ interface ProjectConfig {
  * 媒体定义
  * TODO
  */
-interface MediaDefine {
+interface RawMediaDefine {
 
 }
 
@@ -29,7 +29,7 @@ interface MediaDefine {
  * 角色定义表
  * TODO
  */
-interface CharacterTable {
+interface RawCharacterTable {
 
 }
 
@@ -57,7 +57,7 @@ export interface RawCharacters{
 /**
  * 音效
  */
-interface Sound {
+interface RawSound {
   sound: string;//音效地址
   time: number;//持续时间
 }
@@ -66,7 +66,7 @@ interface Sound {
  * 音效集
  */
 interface RawSoundSet {
-  [key: string]: Sound
+  [key: string]: RawSound
 }
 
 
@@ -121,8 +121,8 @@ export interface RawScripts {
  * 项目文件
  */
 export interface RawProject {
-  config?: ProjectConfig;
-  mediadef?: MediaDefine;
-  chartab?: CharacterTable;
+  config?: RawProjectConfig;
+  mediadef?: RawMediaDefine;
+  chartab?: RawCharacterTable;
   logfile?: RawScripts;
 }

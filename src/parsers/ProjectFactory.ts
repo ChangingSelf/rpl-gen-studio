@@ -2,9 +2,8 @@ import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
 import { RawProject } from './RawProject';
-import { Project, ProjectConfig } from './Project';
+import { Project } from './Project';
 import { ScriptParser } from './ScriptParser';
-
 
 export class ProjectFactory {
   static tempFolderName = 'temp';
@@ -48,7 +47,12 @@ export class ProjectFactory {
     project.rawProject = ProjectFactory.loadRawProject();
     if (project.rawProject !== null) {
       project.scripts = ScriptParser.parseScripts(project.rawProject);
-      project.config.name = project.rawProject.config?.Name ?? '';
+      
+      //TODO:待解析项目配置、媒体定义和角色表
+      project.config = project.rawProject.config;
+      project.media = project.rawProject.mediadef;
+      project.characters = project.rawProject.chartab;
+      
       return project;
     } else {
       return null;
@@ -60,7 +64,6 @@ export class ProjectFactory {
       (err) => {
         if (err) {
           vscode.window.showErrorMessage('保存失败！', err.message);
-          return;
         } else {
           vscode.window.showInformationMessage('保存成功！');
         }
