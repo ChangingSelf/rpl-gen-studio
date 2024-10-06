@@ -59,13 +59,14 @@ export interface RawCharacters{
  */
 interface RawSound {
   sound: string;//音效地址
-  time: number;//持续时间
+  time?: number;//持续时间
+  delay?: number;//延迟时间
 }
 
 /**
  * 音效集
  */
-interface RawSoundSet {
+export interface RawSoundSet {
   [key: string]: RawSound
 }
 

@@ -13,6 +13,10 @@ export class Method{
   }
 
   static parse(text: string): Method | null{
+    if(!text){
+      return null;
+    }
+
     const regex = /^<(\w+)(=(\d+))?>$/m;
     let r = regex.exec(text);
     if (r) {

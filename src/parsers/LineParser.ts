@@ -11,6 +11,7 @@ import { WaitLine } from "./lines/WaitLine";
 import { Line, LineType } from "./Line";
 import { SetLine } from "./lines/SetLine";
 import { ConfigValue, ValueType } from "./lines/components/ConfigValue";
+import { SoundBoxes } from "./lines/components/SoundBoxes";
 
 
 /**
@@ -60,8 +61,9 @@ export class LineParser {
 
           const textEffect = new Method(r.tx_method?.method, r.tx_method?.method_dur);
 
-          //TODO:音效框的解析
-          return new DialogLine(characterList, toggleEffect, r.content, textEffect);
+          const soundBoxes = new SoundBoxes(r.sound_set);
+          
+          return new DialogLine(characterList, toggleEffect, r.content, textEffect,soundBoxes);
         }
         default:
           return new BlankLine();
