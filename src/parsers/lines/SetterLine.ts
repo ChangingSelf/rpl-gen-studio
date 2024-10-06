@@ -1,14 +1,14 @@
-import { ConfigValue } from "./components/ConfigValue";
+import { SetterLineValue } from "./components/SetterLineValue";
 import { Line, LineType } from "../Line";
 import { RawLine } from "../RawProject";
 
 /**
- * 注释行
+ * 设置行
  */
-export class SetLine extends Line {
+export class SetterLine extends Line {
   constructor(
     public target: string,
-    public value:ConfigValue,
+    public value:SetterLineValue,
   ) {
     super(LineType.COMMENT);
   }
@@ -17,15 +17,15 @@ export class SetLine extends Line {
     return `<set:${this.target}>:${this.value}`;
   }
 
-  static override parse(text: string): SetLine | null {
+  static override parse(text: string): SetterLine | null {
     const regex = /^<set:(.*?)>:(.*?)$/m;
     let r = regex.exec(text);
     if (r) {
-      const value = ConfigValue.parse(r[1], r[2]);
+      const value = SetterLineValue.parse(r[1], r[2]);
       if (!value) {
         return null;
       }
-      return new SetLine(r[1], value);
+      return new SetterLine(r[1], value);
     } else {
       return null;
     }
@@ -33,8 +33,10 @@ export class SetLine extends Line {
   
   toRaw(): RawLine {
     return {
-      type: LineType.COMMENT,
-      content: this.target,
+      type: LineType.SET,
+      target: this.target,
+      value_type: this.value.valueType,
+      value: this.value.toRawValue(),
     };
   }
 }

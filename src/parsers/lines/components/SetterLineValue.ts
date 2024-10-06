@@ -12,7 +12,7 @@ export enum ValueType{
 }
 
 
-export class ConfigValue{
+export class SetterLineValue{
   
   constructor(
     public valueType: ValueType,
@@ -21,11 +21,11 @@ export class ConfigValue{
     
   }
 
-  static parse(target: string, value: string): ConfigValue | null{
+  static parse(target: string, value: string): SetterLineValue | null{
     //类型1：整数型
     const digitTypeList = ['am_dur_default', 'bb_dur_default', 'bg_dur_default', 'tx_dur_default', 'speech_speed', 'asterisk_pause', 'secondary_alpha', 'secondary_brightness'];
     if (digitTypeList.some(x => x === target)) {
-      return new ConfigValue(ValueType.DIGIT,Number(value));
+      return new SetterLineValue(ValueType.DIGIT,Number(value));
     }
     //类型2：method
     const methodTypeList = ['am_method_default', 'bb_method_default', 'bg_method_default', 'tx_method_default'];
@@ -34,23 +34,23 @@ export class ConfigValue{
       if (!method) {
         return null;
       }
-      return new ConfigValue(ValueType.METHOD, method);
+      return new SetterLineValue(ValueType.METHOD, method);
     }
 
     //类型3：BGM （已禁用）
 
     //类型4：函数
     if (target === 'formula') {
-      return new ConfigValue(ValueType.FUNCTION, value);//TODO:解析函数的参数
+      return new SetterLineValue(ValueType.FUNCTION, value);//TODO:解析函数的参数
     }
 
     //类型5：枚举
     if (target === 'inline_method_apply') {
-      return new ConfigValue(ValueType.ENUM, value);
+      return new SetterLineValue(ValueType.ENUM, value);
     }
 
     if (target === 'method_protocol') {
-      return new ConfigValue(ValueType.PROTOCOL, value);
+      return new SetterLineValue(ValueType.PROTOCOL, value);
     }
 
     return null;
@@ -58,10 +58,21 @@ export class ConfigValue{
 
   toString() {
     switch (this.valueType) {
-      case ValueType.DIGIT: case ValueType.FUNCTION: case ValueType.ENUM: case ValueType.PROTOCOL:
+      case ValueType.DIGIT:case ValueType.FUNCTION: case ValueType.ENUM: case ValueType.PROTOCOL:
         return String(this.value);
       case ValueType.METHOD:
         return (this.value as Method).toString();
+    }  
+  }
+
+  toRawValue() {
+    switch (this.valueType) {
+      case ValueType.FUNCTION: case ValueType.ENUM: case ValueType.PROTOCOL:
+        return String(this.value);
+      case ValueType.DIGIT: 
+        return Number(this.value);
+      case ValueType.METHOD:
+        return (this.value as Method).toRaw();
     }  
   }
 }

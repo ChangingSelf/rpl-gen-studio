@@ -9,8 +9,8 @@ import { RawLine, RawMethod } from "./RawProject";
 import { BgmLine } from "./lines/BgmLine";
 import { WaitLine } from "./lines/WaitLine";
 import { Line, LineType } from "./Line";
-import { SetLine } from "./lines/SetLine";
-import { ConfigValue, ValueType } from "./lines/components/ConfigValue";
+import { SetterLine } from "./lines/SetterLine";
+import { SetterLineValue, ValueType } from "./lines/components/SetterLineValue";
 import { SoundBoxes } from "./lines/components/SoundBoxes";
 
 
@@ -45,11 +45,11 @@ export class LineParser {
           if (!r.target) {
             return null;
           }
-          const value = new ConfigValue(r.value_type as ValueType, r.value_type===ValueType.METHOD ? new Method((r.value as RawMethod).method ,(r.value as RawMethod).method_dur) : String(r.value));
+          const value = new SetterLineValue(r.value_type as ValueType, r.value_type===ValueType.METHOD ? new Method((r.value as RawMethod).method ,(r.value as RawMethod).method_dur) : String(r.value));
           if (!value) {
             return null;
           }
-          return new SetLine(r.target, value);
+          return new SetterLine(r.target, value);
         case LineType.DIALOG: {
           const characterList: Character[] = [];
           for (const key in r.charactor_set) {
@@ -81,7 +81,7 @@ export class LineParser {
   static parseFromStr(line: string): Line | null {
     try {
       const parserChain = [
-        SetLine.parse,
+        SetterLine.parse,
         BackgroundLine.parse,
         BgmLine.parse,
         DialogLine.parse,
