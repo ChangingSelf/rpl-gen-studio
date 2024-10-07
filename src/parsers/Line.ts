@@ -15,6 +15,7 @@ export enum LineType {
   BGM = "music",
   DICE = "dice",
   HP = "hitpoint",
+  ANIMATION = "animation",
 }
 
 

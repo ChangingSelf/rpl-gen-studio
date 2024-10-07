@@ -15,6 +15,7 @@ import { SoundBoxes } from "./lines/components/SoundBoxes";
 import { DiceLine } from "./lines/DiceLine";
 import { Dice } from "./lines/components/Dice";
 import { HitPointLine } from "./lines/HitPointLine";
+import { AnimationLine } from "./lines/AnimationLine";
 
 
 /**
@@ -38,7 +39,10 @@ export class LineParser {
         case LineType.BLANK:
           return new BlankLine();
         case LineType.BACKGROUND:
-          return new BackgroundLine(r.object ?? '', new Method(r.bg_method?.method, r.bg_method?.method_dur));
+          if (typeof r.object !== 'string') {
+              throw new Error('背景行只能指定一个媒体');
+          }
+          return new BackgroundLine((r.object ?? '' as string), new Method(r.bg_method?.method, r.bg_method?.method_dur));
         case LineType.BGM:
           return new BgmLine((r.value as string) ?? '');
         case LineType.WAIT:
@@ -79,6 +83,19 @@ export class LineParser {
         case LineType.HP: {
           return new HitPointLine(r.content, r.hp_max, r.hp_begin, r.hp_end);
         }
+        case LineType.ANIMATION: {
+          let obj: string | string[] | null = [];
+          if(r.object === null){
+            obj = null;
+          }else if (typeof r.object === 'object') {
+            for(const key in r.object){
+              obj.push(r.object[key]);
+            }
+          }else if(typeof r.object === 'string'){
+            obj = r.object;
+          }
+          return new AnimationLine(new Method(r.am_method?.method, r.am_method?.method_dur), obj);
+        }
         default:
           return new BlankLine();
       }
@@ -95,6 +112,7 @@ export class LineParser {
   static parseFromStr(line: string): Line | null {
     try {
       const parserChain = [
+        AnimationLine.parse,
         SetterLine.parse,
         BackgroundLine.parse,
         BgmLine.parse,

@@ -84,6 +84,10 @@ export interface RawDiceSet{
   [key: string]: RawDice
 }
 
+export interface RawMediaObjectGroup{
+  [key: string]: string
+}
+
 
 /**
  * 剧本行（项目文件中原始定义结构）
@@ -104,7 +108,7 @@ export interface RawLine {
 
   //背景行
   bg_method?: RawMethod;
-  object?: string;//媒体对象
+  object?: string | null | RawMediaObjectGroup;//媒体对象
 
   //对话行
   charactor_set?: RawCharacters;
@@ -122,6 +126,9 @@ export interface RawLine {
   hp_max?: number;//最大血量
   hp_begin?: number;//初始血量
   hp_end?: number;//结束血量
+
+  //常驻立绘行
+  am_method?: RawMethod;
 }
 
 /**
