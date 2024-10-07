@@ -9,7 +9,7 @@ export class Character {
 
   public toString() {
     let str = this.name;
-    if (this.alpha !== null && !this.alpha) {
+    if (this.alpha !== null) {
       str += `(${this.alpha})`;
     }
     if (this.subtype !== "default") {
