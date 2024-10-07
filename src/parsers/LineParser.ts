@@ -14,6 +14,7 @@ import { SetterLineValue, ValueType } from "./lines/components/SetterLineValue";
 import { SoundBoxes } from "./lines/components/SoundBoxes";
 import { DiceLine } from "./lines/DiceLine";
 import { Dice } from "./lines/components/Dice";
+import { HitPointLine } from "./lines/HitPointLine";
 
 
 /**
@@ -75,6 +76,9 @@ export class LineParser {
           }
           return new DiceLine(diceList);
         }
+        case LineType.HP: {
+          return new HitPointLine(r.content, r.hp_max, r.hp_begin, r.hp_end);
+        }
         default:
           return new BlankLine();
       }
@@ -95,6 +99,7 @@ export class LineParser {
         BackgroundLine.parse,
         BgmLine.parse,
         DiceLine.parse,
+        HitPointLine.parse,
         DialogLine.parse,
         WaitLine.parse,
         CommentLine.parse,

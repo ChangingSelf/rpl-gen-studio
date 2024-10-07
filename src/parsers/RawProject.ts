@@ -117,6 +117,11 @@ export interface RawLine {
 
   //骰子行
   dice_set?: RawDiceSet;
+
+  //血量行
+  hp_max?: number;//最大血量
+  hp_begin?: number;//初始血量
+  hp_end?: number;//结束血量
 }
 
 /**

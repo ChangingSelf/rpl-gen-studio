@@ -14,6 +14,7 @@ export enum LineType {
   WAIT = "wait",
   BGM = "music",
   DICE = "dice",
+  HP = "hitpoint",
 }
 
 
