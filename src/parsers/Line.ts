@@ -16,6 +16,7 @@ export enum LineType {
   DICE = "dice",
   HP = "hitpoint",
   ANIMATION = "animation",
+  BUBBLE = "bubble",
 }
 
 

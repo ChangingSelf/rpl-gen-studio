@@ -88,6 +88,13 @@ export interface RawMediaObjectGroup{
   [key: string]: string
 }
 
+export interface RawBubbleParams{
+  bubble: string;
+  header_text: string;
+  main_text: string;
+  tx_method: RawMethod;
+}
+
 
 /**
  * 剧本行（项目文件中原始定义结构）
@@ -108,7 +115,7 @@ export interface RawLine {
 
   //背景行
   bg_method?: RawMethod;
-  object?: string | null | RawMediaObjectGroup;//媒体对象
+  object?: string | null | RawMediaObjectGroup | RawBubbleParams;//媒体对象
 
   //对话行
   charactor_set?: RawCharacters;
@@ -129,6 +136,9 @@ export interface RawLine {
 
   //常驻立绘行
   am_method?: RawMethod;
+
+  //常驻气泡行
+  bb_method?: RawMethod;
 }
 
 /**

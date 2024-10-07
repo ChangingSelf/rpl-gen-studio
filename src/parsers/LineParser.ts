@@ -5,7 +5,7 @@ import { CommentLine } from "./lines/CommentLine";
 import { ExceptionLine } from "./lines/ExceptionLine";
 import { DialogLine } from "./lines/DialogLine";
 import { BackgroundLine } from "./lines/BackgroundLine";
-import { RawLine, RawMethod } from "./RawProject";
+import { RawBubbleParams, RawLine, RawMediaObjectGroup, RawMethod } from "./RawProject";
 import { BgmLine } from "./lines/BgmLine";
 import { WaitLine } from "./lines/WaitLine";
 import { Line, LineType } from "./Line";
@@ -16,6 +16,8 @@ import { DiceLine } from "./lines/DiceLine";
 import { Dice } from "./lines/components/Dice";
 import { HitPointLine } from "./lines/HitPointLine";
 import { AnimationLine } from "./lines/AnimationLine";
+import { BubbleLine } from "./lines/BubbleLine";
+import { BubbleParams } from "./lines/components/BubbleParams";
 
 
 /**
@@ -89,12 +91,28 @@ export class LineParser {
             obj = null;
           }else if (typeof r.object === 'object') {
             for(const key in r.object){
-              obj.push(r.object[key]);
+              obj.push((r.object as RawMediaObjectGroup)[key]);
             }
           }else if(typeof r.object === 'string'){
             obj = r.object;
           }
           return new AnimationLine(new Method(r.am_method?.method, r.am_method?.method_dur), obj);
+        }
+        case LineType.BUBBLE: {
+          let obj = null;
+          if(r.object === null || typeof r.object === "string"){
+            obj = r.object;
+          }else{
+            const params = (r.object as RawBubbleParams);
+            obj = new BubbleParams(
+              params.bubble,
+              params.header_text,
+              params.main_text,
+              new Method(params.tx_method.method, params.tx_method.method_dur)
+            )
+          }
+          
+          return new BubbleLine(new Method(r.bb_method?.method, r.bb_method?.method_dur), obj);
         }
         default:
           return new BlankLine();
@@ -113,6 +131,7 @@ export class LineParser {
     try {
       const parserChain = [
         AnimationLine.parse,
+        BubbleLine.parse,
         SetterLine.parse,
         BackgroundLine.parse,
         BgmLine.parse,
