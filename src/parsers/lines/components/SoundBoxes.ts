@@ -1,5 +1,4 @@
 import { RawSoundSet } from "../../RawProject";
-import { SoundEffectBox } from "./SoundEffectBox";
 
 export class SoundBoxes {
   constructor(
