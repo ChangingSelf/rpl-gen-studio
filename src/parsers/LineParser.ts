@@ -18,6 +18,8 @@ import { HitPointLine } from "./lines/HitPointLine";
 import { AnimationLine } from "./lines/AnimationLine";
 import { BubbleLine } from "./lines/BubbleLine";
 import { BubbleParams } from "./lines/components/BubbleParams";
+import { ClearLine } from "./lines/ClearLine";
+import { UnknownLine } from "./lines/UnknownLine";
 
 
 /**
@@ -114,8 +116,10 @@ export class LineParser {
           
           return new BubbleLine(new Method(r.bb_method?.method, r.bb_method?.method_dur), obj);
         }
+        case LineType.CLEAR:
+          return new ClearLine(r.object as string);
         default:
-          return new BlankLine();
+          return new UnknownLine(JSON.stringify(r));
       }
     } catch (err) {
       console.log((err as Error).message);
@@ -141,6 +145,7 @@ export class LineParser {
         WaitLine.parse,
         CommentLine.parse,
         BlankLine.parse,
+        ClearLine.parse,
       ];
       const resultList = parserChain.map((parser) => parser(line));
       const result = resultList.find(x => x !== null);

@@ -17,6 +17,8 @@ export enum LineType {
   HP = "hitpoint",
   ANIMATION = "animation",
   BUBBLE = "bubble",
+  CLEAR = "clear",
+  UNKNOWN = "comment",
 }
 
 
