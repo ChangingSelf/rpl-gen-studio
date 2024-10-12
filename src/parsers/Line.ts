@@ -18,7 +18,8 @@ export enum LineType {
   ANIMATION = "animation",
   BUBBLE = "bubble",
   CLEAR = "clear",
-  UNKNOWN = "comment",
+  UNKNOWN = "unknown",
+  TABLE = "table",
 }
 
 

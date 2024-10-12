@@ -26,7 +26,7 @@ export class UnknownLine extends Line {
   
   toRaw(): RawLine {
     return {
-      type: LineType.UNKNOWN,
+      type: LineType.COMMENT,
       content: `#### 此语法暂未被本插件支持：${this.message}`,
     };
   }

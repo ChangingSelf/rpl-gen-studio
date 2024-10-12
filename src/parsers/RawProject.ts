@@ -95,6 +95,12 @@ export interface RawBubbleParams{
   tx_method: RawMethod;
 }
 
+export interface RawTarget{
+  name:string,
+  column:string,
+  subtype:string|null,
+}
+
 
 /**
  * 剧本行（项目文件中原始定义结构）
@@ -109,7 +115,8 @@ export interface RawLine {
   info?: string;//异常信息
 
   //设置行
-  target?: string;//设置项
+  target?: string | RawTarget;
+  //设置项
   value_type?: string;//设置项值的类型
   value?: number | string | RawMethod;//设置值
 

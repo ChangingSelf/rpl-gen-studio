@@ -5,7 +5,7 @@ import { CommentLine } from "./lines/CommentLine";
 import { ExceptionLine } from "./lines/ExceptionLine";
 import { DialogLine } from "./lines/DialogLine";
 import { BackgroundLine } from "./lines/BackgroundLine";
-import { RawBubbleParams, RawLine, RawMediaObjectGroup, RawMethod } from "./RawProject";
+import { RawBubbleParams, RawLine, RawMediaObjectGroup, RawMethod, RawTarget } from "./RawProject";
 import { BgmLine } from "./lines/BgmLine";
 import { WaitLine } from "./lines/WaitLine";
 import { Line, LineType } from "./Line";
@@ -20,6 +20,7 @@ import { BubbleLine } from "./lines/BubbleLine";
 import { BubbleParams } from "./lines/components/BubbleParams";
 import { ClearLine } from "./lines/ClearLine";
 import { UnknownLine } from "./lines/UnknownLine";
+import { TableLine } from "./lines/TableLine";
 
 
 /**
@@ -60,7 +61,7 @@ export class LineParser {
           if (!value) {
             return null;
           }
-          return new SetterLine(r.target, value);
+          return new SetterLine(r.target as string, value);
         case LineType.DIALOG: {
           const characterList: Character[] = [];
           for (const key in r.charactor_set) {
@@ -118,6 +119,8 @@ export class LineParser {
         }
         case LineType.CLEAR:
           return new ClearLine(r.object as string);
+        case LineType.TABLE:
+          return new TableLine(r.target as RawTarget, r.value as string);
         default:
           return new UnknownLine(JSON.stringify(r));
       }
@@ -146,6 +149,7 @@ export class LineParser {
         CommentLine.parse,
         BlankLine.parse,
         ClearLine.parse,
+        TableLine.parse,
       ];
       const resultList = parserChain.map((parser) => parser(line));
       const result = resultList.find(x => x !== null);
