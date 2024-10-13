@@ -28,8 +28,14 @@ export class Script {
    */
   toString(): string {
     let content = '';
+    let isFirst = true;
     for (const line of this.lines) {
-      content += line.toString() + '\n';
+      if(!isFirst){
+        content += '\n';
+      }else{
+        isFirst = false;
+      }
+      content += line.toString();
     }
     return content;
   }
