@@ -21,18 +21,36 @@ function removeDir(dirPath:string) {
           fs.unlinkSync(filePath);
       }
   });
+  fs.unlinkSync(dirPath);
+}
+
+function getTmpDir(){
+  const tempFolderName = ProjectFactory.tempFolderName;
+  const workspacePath = vscode.workspace.workspaceFolders?.[0].uri.fsPath;
+  if(!workspacePath){
+    return null;
+  }
+  const tempDir = path.join(workspacePath, tempFolderName);
+  return tempDir;
+}
+
+function refreshTmpDir(){
+  const tempDir = getTmpDir();
+  if(!tempDir){
+    return null;
+  }
+  
+  if (fs.existsSync(tempDir)) {
+    removeDir(tempDir);
+  }
+  fs.mkdirSync(tempDir);
+  return tempDir;
 }
 
 export function activate(context: vscode.ExtensionContext) {
 
   //创建临时文件夹
-  const tempFolderName = ProjectFactory.tempFolderName;
-  const tempDir = path.join(context.extensionPath, tempFolderName);
-  if (!fs.existsSync(tempDir)) {
-    fs.mkdirSync(tempDir);
-  } else {
-    removeDir(tempDir);
-  }
+  const tempDir = refreshTmpDir();
 
   //创建树视图提供者
   let scriptProvider = new ScriptProvider();
@@ -44,6 +62,7 @@ export function activate(context: vscode.ExtensionContext) {
   //侧边栏刷新指令
   context.subscriptions.push(vscode.commands.registerCommand('rpl-gen-studio.refreshTreeView',
     () => {
+      refreshTmpDir();
       scriptProvider.refresh();
     })
   );
@@ -51,6 +70,10 @@ export function activate(context: vscode.ExtensionContext) {
   //打开文档
   context.subscriptions.push(vscode.commands.registerCommand('rpl-gen-studio.openScript',
     (script: ScriptNode) => {
+      const tempDir = getTmpDir();
+      if(!tempDir){
+        return;
+      }
       // 创建临时文件之后再打开
       const tempFilePath = path.join(tempDir, script.label + '.rgl');
       if (!fs.existsSync(tempFilePath)) {
@@ -64,6 +87,10 @@ export function activate(context: vscode.ExtensionContext) {
 
   //保存文件
   context.subscriptions.push(vscode.workspace.onDidSaveTextDocument(doc => {
+    if(!tempDir){
+      return;
+    }
+    
     //如果是保存的是临时文件，那么就将其保存到项目文件当中
     if (doc.uri.fsPath.startsWith(tempDir) && path.extname(doc.fileName) === '.rgl') {
       //获取项目文件所在目录
@@ -103,6 +130,9 @@ export function activate(context: vscode.ExtensionContext) {
 
   //关闭时删除临时文件（这取决于vscode什么时候彻底关闭对应的文档）
   context.subscriptions.push(vscode.workspace.onDidCloseTextDocument((doc: vscode.TextDocument) => {
+    if(!tempDir){
+      return;
+    }
     if (doc.uri.fsPath.startsWith(tempDir)) {
       fs.rmSync(doc.fileName);
     }

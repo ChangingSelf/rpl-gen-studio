@@ -23,7 +23,8 @@
       },
       {
         "command": "rpl-gen-studio.refreshTreeView",
-        "title": "刷新项目视图"
+        "title": "刷新项目视图",
+        "icon": "$(refresh)"
       },
       {
         "command": "rpl-gen-studio.openScript",
