@@ -1,12 +1,17 @@
 {
   "name": "rpl-gen-studio",
   "displayName": "RplGenStudio",
-  "description": "回声工坊2扩展，增强剧本文件编辑",
+  "description": "回声工坊2扩展，增强剧本文件编辑。适配回声工坊2的项目结构",
   "icon": "images/icon.png",
   "version": "1.0.0",
   "engines": {
     "vscode": "^1.87.0"
   },
+  "publisher": "yxChangingSelf",
+  "repository": {
+    "url": "https://github.com/ChangingSelf/rpl-gen-studio"
+  },
+  "license": "MIT",
   "categories": [
     "Other"
   ],
