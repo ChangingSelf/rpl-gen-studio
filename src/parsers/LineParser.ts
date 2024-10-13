@@ -5,7 +5,7 @@ import { CommentLine } from "./lines/CommentLine";
 import { ExceptionLine } from "./lines/ExceptionLine";
 import { DialogLine } from "./lines/DialogLine";
 import { BackgroundLine } from "./lines/BackgroundLine";
-import { RawBubbleParams, RawLine, RawMediaObjectGroup, RawMethod, RawTarget } from "./RawProject";
+import { RawBubbleParams, RawLine, RawMediaObjectGroup, RawMethod, RawPosition, RawPositionValue, RawTarget } from "./RawProject";
 import { BgmLine } from "./lines/BgmLine";
 import { WaitLine } from "./lines/WaitLine";
 import { Line, LineType } from "./Line";
@@ -21,6 +21,9 @@ import { BubbleParams } from "./lines/components/BubbleParams";
 import { ClearLine } from "./lines/ClearLine";
 import { UnknownLine } from "./lines/UnknownLine";
 import { TableLine } from "./lines/TableLine";
+import { MoveLine } from "./lines/MoveLine";
+import { PositionValue } from "./lines/components/PositionValue";
+import { Position } from "./lines/components/Position";
 
 
 /**
@@ -121,6 +124,15 @@ export class LineParser {
           return new ClearLine(r.object as string);
         case LineType.TABLE:
           return new TableLine(r.target as RawTarget, r.value as string);
+        case LineType.MOVE:{
+          const value = r.value as RawPositionValue;
+          const pos1 = Position.parseFromRaw(value.pos1 as RawPosition);
+          const pos2 = Position.parseFromRaw(value.pos2 as RawPosition);
+          if(!pos1){
+            return null;
+          }
+          return new MoveLine(r.target as string, new PositionValue(pos1,value.operator,pos2)); 
+        } 
         default:
           return new UnknownLine(JSON.stringify(r));
       }
@@ -150,6 +162,7 @@ export class LineParser {
         BlankLine.parse,
         ClearLine.parse,
         TableLine.parse,
+        MoveLine.parse,
       ];
       const resultList = parserChain.map((parser) => parser(line));
       const result = resultList.find(x => x !== null);

@@ -101,6 +101,18 @@ export interface RawTarget{
   subtype:string|null,
 }
 
+export interface RawPosition{
+  type: string;
+  object: string | null;
+  index: number[] | null;
+}
+
+
+export interface RawPositionValue{
+  pos1: string | number[] | RawPosition;
+  operator: "+" | "-" | null;
+  pos2: string | number[] | RawPosition | null;
+}
 
 /**
  * 剧本行（项目文件中原始定义结构）
@@ -118,7 +130,7 @@ export interface RawLine {
   target?: string | RawTarget;
   //设置项
   value_type?: string;//设置项值的类型
-  value?: number | string | RawMethod;//设置值
+  value?: number | string | RawMethod | RawPositionValue;//设置值
 
   //背景行
   bg_method?: RawMethod;

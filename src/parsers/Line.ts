@@ -20,6 +20,7 @@ export enum LineType {
   CLEAR = "clear",
   UNKNOWN = "unknown",
   TABLE = "table",
+  MOVE = "move",
 }
 
 
