@@ -40,6 +40,14 @@ export class SoundBoxes {
       const boxes = matches.map(match => match.slice(1, -1));
       let index = 0;
       for(const box of boxes){
+        if(box === "*"){
+          soundBoxes.rawSoundSet['{*}'] = {
+            sound: null,
+            time: null,
+          }
+          continue;
+        }
+
         const soundData = box.split(';');
         const sound = soundData[0];
         const timeStr = soundData[1] ?? "0";

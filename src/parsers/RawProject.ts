@@ -58,8 +58,8 @@ export interface RawCharacters{
  * 音效
  */
 interface RawSound {
-  sound: string;//音效地址
-  time?: number;//持续时间
+  sound: string | null;//音效地址
+  time?: number | null;//持续时间
   delay?: number;//延迟时间
 }
 
