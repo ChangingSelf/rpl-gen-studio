@@ -3,7 +3,7 @@
   "displayName": "RplGenStudio",
   "description": "回声工坊2扩展，增强剧本文件编辑",
   "icon": "images/icon.png",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "engines": {
     "vscode": "^1.87.0"
   },
